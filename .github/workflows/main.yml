@@ -22,7 +22,8 @@ jobs:
           echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
           sudo apt update && sudo apt install ngrok -y
           ngrok config add-authtoken ${{ secrets.NGROK_TOKEN }}
-          ngrok tcp 25565 &
+          nohup ngrok tcp 25565 > ngrok.log 2>&1 &
+          sleep 8
 
       - name: Download Minecraft Server Jar
         run: |
@@ -44,13 +45,11 @@ jobs:
           wget -O EssentialsX.jar https://github.com/EssentialsX/Essentials/releases/download/2.20.1/EssentialsX-2.20.1.jar
           wget -O EssentialsXSpawn.jar https://github.com/EssentialsX/Essentials/releases/download/2.20.1/EssentialsXSpawn-2.20.1.jar
 
-      - name: Run Server & Show IP
+      - name: Show IP & Run Server
         run: |
-          echo "Waiting for ngrok tunnel to establish..."
-          sleep 12
           echo "=========================================="
-          echo "YOUR NGROK SERVER IP ADDRESS:"
-          curl --silent http://127.0.0.1:4040/api/tunnels || true
+          echo "YOUR NGROK CONNECTION DETAILS (URL):"
+          cat ngrok.log | grep -o "tcp://[^ ]*" || echo "Tunnel initializing..."
           echo "=========================================="
           cd server
           java -Xmx6G -jar server.jar nogui
