@@ -13,7 +13,7 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
       - name: Install & Start ngrok
@@ -28,7 +28,7 @@ jobs:
         run: |
           mkdir server
           cd server
-          wget -O server.jar https://api.papermc.io/v2/projects/paper/versions/1.20.1/builds/196/downloads/paper-1.20.1-196.jar
+          wget -O server.jar "https://api.papermc.io/v2/projects/paper/versions/1.20.4/builds/496/downloads/paper-1.20.4-496.jar"
           echo "eula=true" > eula.txt
           echo "online-mode=false" > server.properties
 
@@ -42,7 +42,7 @@ jobs:
 
       - name: Get Server IP & Run Server
         run: |
-          sleep 5
+          sleep 6
           echo "=========================================="
           echo "YOUR MINECRAFT SERVER IP & PORT BELOW:"
           curl -s http://localhost:4040/api/tunnels | grep -o 'tcp://[^\"]*'
