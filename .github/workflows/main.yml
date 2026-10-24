@@ -44,12 +44,14 @@ jobs:
           wget -O EssentialsX.jar https://github.com/EssentialsX/Essentials/releases/download/2.20.1/EssentialsX-2.20.1.jar
           wget -O EssentialsXSpawn.jar https://github.com/EssentialsX/Essentials/releases/download/2.20.1/EssentialsXSpawn-2.20.1.jar
 
-      - name: Get Server IP & Run Server
+      - name: Print Server IP & Run Server
         run: |
-          sleep 12
+          echo "Waiting for ngrok tunnel..."
+          sleep 15
+          NGROK_IP=$(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url')
           echo "=========================================="
-          echo "YOUR MINECRAFT SERVER IP & PORT BELOW:"
-          curl -s http://localhost:4040/api/tunnels | grep -o 'tcp://[^\"]*' || echo "Retrying IP fetch..."
+          echo "YOUR MINECRAFT SERVER IP IS:"
+          echo "$NGROK_IP"
           echo "=========================================="
           cd server
           java -Xmx6G -jar server.jar nogui
